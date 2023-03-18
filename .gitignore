@@ -72,7 +72,7 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
 # Working Directory
-/[Aa]ssets/Assignments/*/Materials
-/[Aa]ssets/Assignments/*/Scenes
-/[Aa]ssets/Assignments/*/Scripts
-/[Aa]ssets/Assignments/*/Shaders
+/[Aa]ssets/Assignments/*/Materials/*
+/[Aa]ssets/Assignments/*/Scenes/*
+/[Aa]ssets/Assignments/*/Scripts/*
+/[Aa]ssets/Assignments/*/Shaders/*
