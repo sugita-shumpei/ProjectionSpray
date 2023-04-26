@@ -76,3 +76,5 @@ crashlytics-build.properties
 /[Aa]ssets/Assignments/*/Scripts/*
 /[Aa]ssets/Assignments/*/Shaders/*
 /[Aa]ssets/Textures/*
+/[Aa]ssets/References/01_SimpleDraw
+/[Aa]ssets/References/02_SimpleLight
