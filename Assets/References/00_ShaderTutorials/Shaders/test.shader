@@ -1,0 +1,76 @@
+Shader "Unlit/reference/test"
+{
+    Properties
+    {
+        _MainTex ("Texture", 2D) = "white" {}
+        _Color("Color", Color) = (1,1,1,1)
+        _Scale("Scale", Range(0,1)) = 1
+    }
+    SubShader
+    {
+        Tags { "RenderType"="Opaque" }
+        LOD 100
+
+        Pass
+        {
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            // make fog work
+            #pragma multi_compile_fog
+
+            #include "UnityCG.cginc"
+
+            struct appdata
+            {
+                float4 vertex : POSITION;
+                float3 normal : NORMAL;
+                float4 tangent :TANGENT;
+                float2 uv : TEXCOORD0;
+            };
+
+            struct v2f
+            {
+                float2 uv : TEXCOORD0;
+                UNITY_FOG_COORDS(1)
+                float4 vertex : SV_POSITION;
+                float4 position: POSITION1;
+                float3 normal : NORMAL;
+                float4 tangent :TANGENT;
+            };
+
+            sampler2D _MainTex;
+            float4 _MainTex_ST;
+            float4 _Color;
+            float _Scale;
+
+            v2f vert (appdata v)
+            {
+                v2f o;
+                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.position = mul(unity_ObjectToWorld, v.vertex);
+                o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+                o.normal = UnityObjectToWorldNormal(v.normal);
+                o.tangent.xyz = normalize(mul(unity_ObjectToWorld, v.tangent.xyz));
+                o.tangent.w = v.tangent.w;
+                UNITY_TRANSFER_FOG(o,o.vertex);
+                return o;
+            }
+
+            fixed4 frag (v2f i) : SV_Target
+            {
+                float3 normal = i.normal;//‚»‚Ì‚Ü‚Ü
+                float3 binormal = cross(normal, i.tangent.xyz);
+                float3 tangent = normalize(cross(binormal, normal));
+                binormal = normalize(binormal * i.tangent.w * unity_WorldTransformParams.w);
+
+                // sample the texture
+                fixed4 col = tex2D(_MainTex,i.uv);
+                // apply fog
+                UNITY_APPLY_FOG(i.fogCoord, col);
+                return fixed4(i.uv.x,i.uv.y,1.0-(i.uv.x+i.uv.y)/2,1);
+            }
+            ENDCG
+        }
+    }
+}
